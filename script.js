@@ -91,7 +91,14 @@ function displayTasks() {
         document.querySelector(`.del-btn-${i}`).style.fontFamily = "Barrio";
         document.querySelector(`.edit-btn-${i}`).style.fontFamily = "Barrio";
         document.querySelector(`.edit-btn-${i}`).style.color = "#1a2a4f";
-        document.querySelector(`.del-btn-${i}`).style.color = "#1a2a4f"
+        document.querySelector(`.del-btn-${i}`).style.color = "#1a2a4f";
+        document.querySelector(`.task-${i}`).addEventListener("click", function() {
+            document.querySelector(`.task-${i}`).innerHTML = tasks[i] + ` <button class='del-btn-${i}' onclick='removeTask(` + i + `)'>x</button>`;
+            document.querySelector(`.task-${i}`).style.backgroundColor = "#6944449e";
+            document.querySelector(`.task-${i}`).style.textDecoration = "line-through";
+            document.querySelector(`.del-btn-${i}`).style.background = "none";
+            document.querySelector(`.del-btn-${i}`).style.textDecoration = "none";
+        })
     }
 };
 
@@ -139,3 +146,5 @@ function loadTasks() {
 
 loadTasks();
 displayTasks();
+
+console.log(localStorage)
