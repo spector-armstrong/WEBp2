@@ -29,7 +29,6 @@ header.style.color = "#101b32";
 header.style.margin = "10px 0"
 insideBlock.appendChild(header);
 
-
 const inputDiv = document.createElement("div");
 inputDiv.classList.add("input-container");
 inputDiv.style.width = "50%";
@@ -54,11 +53,37 @@ inputButton.style.fontSize = "20px";
 inputButton.textContent = "Add"
 inputDiv.appendChild(inputButton);
 
-const noteArea = document.createElement("div");
+const noteArea = document.createElement("ul");
+noteArea.classList.add("note-area")
 noteArea.style.width = "90%";
 noteArea.style.height = "80%";
 noteArea.style.display = "grid";
 noteArea.style.gridTemplate = "repeat(6, 1fr) / repeat(3, 1fr)"
 noteArea.style.gap = "5px";
-noteArea.style.margin = "10px 0"
+noteArea.style.margin = "10px 0";
+noteArea.style.padding = "0";
 insideBlock.appendChild(noteArea);
+
+
+let tasks = [];
+
+function displayTasks() {
+  let html = "";
+  for (let i = 0; i < tasks.length; i++) {
+    html += "<li>" + tasks[i] + " <button onclick='editTask(" + i + ")'>Edit</button>" + " <button onclick='removeTask(" + i + ")'>x</button></li>";
+  }
+  document.querySelector(".note-area").innerHTML = html;
+};
+
+function addTask() {
+  let taskInput = document.querySelector(".input-form");
+  let text = taskInput.value;
+  if (text === "") {
+    return;
+  }
+  tasks.push(text);
+  taskInput.value = "";
+  saveTasks();
+  displayTasks();
+};
+
