@@ -49,12 +49,14 @@ const inputButton = document.createElement('button');
 inputButton.setAttribute('type', 'submit');
 inputButton.setAttribute('class', 'btn');
 inputButton.setAttribute('id', 'btn');
+inputButton.setAttribute('onclick', 'addTask()')
 inputButton.style.fontSize = "20px";
 inputButton.textContent = "Add"
 inputDiv.appendChild(inputButton);
 
 const noteArea = document.createElement("ul");
-noteArea.classList.add("note-area")
+noteArea.classList.add("note-area");
+noteArea.style.listStyleType = "none";
 noteArea.style.width = "90%";
 noteArea.style.height = "80%";
 noteArea.style.display = "grid";
@@ -68,22 +70,72 @@ insideBlock.appendChild(noteArea);
 let tasks = [];
 
 function displayTasks() {
-  let html = "";
-  for (let i = 0; i < tasks.length; i++) {
-    html += "<li>" + tasks[i] + " <button onclick='editTask(" + i + ")'>Edit</button>" + " <button onclick='removeTask(" + i + ")'>x</button></li>";
-  }
-  document.querySelector(".note-area").innerHTML = html;
+    let html = "";
+    for (let i = 0; i < tasks.length; i++) {
+    html += `<li id=${i} class="task-${i}">` + tasks[i] + ` <button class='edit-btn-${i}' onclick='editTask(` + i + `)'>Edit</button>` + ` <button class='del-btn-${i}' onclick='removeTask(` + i + `)'>x</button></li>`;
+    }
+    document.querySelector(".note-area").innerHTML = html;
+    
+    for (let i = 0; i < tasks.length; i++) {
+        document.querySelector(`.task-${i}`).style.border = "solid 2px #1a2a4f";
+        document.querySelector(`.task-${i}`).style.backgroundColor = "#ca85859e";
+        document.querySelector(`.task-${i}`).style.borderRadius = "5px";
+        document.querySelector(`.task-${i}`).style.fontFamily = "Barrio";
+        document.querySelector(`.task-${i}`).style.fontSize = "1em";
+        document.querySelector(`.task-${i}`).style.color = "#1a2a4f";
+        document.querySelector(`.task-${i}`).style.display = "grid";
+        document.querySelector(`.task-${i}`).style.gridTemplate = "1fr / 5fr 1fr 1fr"
+        document.querySelector(`.task-${i}`).style.alignItems = "center"
+        document.querySelector(`.edit-btn-${i}`).style.background = "none";
+        document.querySelector(`.del-btn-${i}`).style.background = "none";
+        document.querySelector(`.del-btn-${i}`).style.fontFamily = "Barrio";
+        document.querySelector(`.edit-btn-${i}`).style.fontFamily = "Barrio";
+        document.querySelector(`.edit-btn-${i}`).style.color = "#1a2a4f";
+        document.querySelector(`.del-btn-${i}`).style.color = "#1a2a4f"
+    }
 };
 
 function addTask() {
-  let taskInput = document.querySelector(".input-form");
-  let text = taskInput.value;
-  if (text === "") {
-    return;
-  }
-  tasks.push(text);
-  taskInput.value = "";
-  saveTasks();
-  displayTasks();
+    let taskInput = document.querySelector(".input-form");
+    let text = taskInput.value;
+    if (text === "") {
+        return;
+    }
+    tasks.push(text);
+    taskInput.value = "";
+    saveTasks();
+    displayTasks();
 };
 
+function removeTask(i) {
+    tasks.splice(i, 1);
+    saveTasks();
+    displayTasks();
+};
+
+function editTask(i) {
+    document.getElementById(i).innerHTML = `<input class="edit-${i}" type="text" placeholder="Edit task">
+    <button class="save-edit-${i}">Save</button>`
+    document.querySelector(`.save-edit-${i}`).addEventListener("click", function () {
+        if (document.querySelector(`.edit-${i}`).value === "") {
+        return;
+        }
+        tasks[i] = document.querySelector(`.edit-${i}`).value;
+        saveTasks();
+        displayTasks();
+    })
+};
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
+function loadTasks() {
+    let saved = localStorage.getItem("tasks");
+    if (saved !== null) {
+        tasks = JSON.parse(saved);
+    }
+};
+
+loadTasks();
+displayTasks();
